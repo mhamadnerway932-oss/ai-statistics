@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>دەربارەی گەشەپێدەر - About Developer</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Kufi+Arabic:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --gradient-1: #3b82f6;
+            --gradient-2: #8b5cf6;
+            --icon-bg: rgba(59, 130, 246, 0.2);
+        }
+
+        body.light-mode {
+            --bg-color: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --text-light: #0f172a;
+            --text-muted: #475569;
+            --border-color: rgba(0, 0, 0, 0.15);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --icon-bg: rgba(59, 130, 246, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Kufi Arabic', 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .about-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px var(--shadow-color);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .about-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--gradient-1), var(--gradient-2));
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background: var(--icon-bg);
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+
+        .title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: linear-gradient(to right, var(--gradient-1), var(--gradient-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            direction: ltr; /* Keeping English text LTR */
+            display: inline-block;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            direction: ltr;
+        }
+
+        .info-list {
+            list-style: none;
+            text-align: left; /* Align to the left due to LTR content */
+            direction: ltr;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--icon-bg);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .info-content h3 {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .info-content p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: color 0.3s;
+            padding: 5px;
+        }
+
+        .theme-toggle:hover {
+            color: var(--text-light);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="about-card">
+        <button onclick="toggleTheme()" class="theme-toggle" id="themeToggleBtn" title="گۆهۆڕینا ڕەنگێ سایتی">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <div class="avatar" id="devAvatar">
+            <i class="fa-solid fa-code"></i>
+        </div>
+
+        <h1 class="title" id="devNameTitle">Mohammed Salim</h1>
+        <p class="subtitle" id="devSubtitleText">Developer & Statistics Student</p>
+
+        <ul class="info-list">
+            <li class="info-item">
+                <div class="info-icon">
+                    <i class="fa-solid fa-laptop-code"></i>
+                </div>
+                <div class="info-content">
+                    <h3>Programmed By</h3>
+                    <p id="devNameList">Mohammed Salim</p>
+                </div>
+            </li>
+            <li class="info-item">
+                <div class="info-icon">
+                    <i class="fa-solid fa-building-columns"></i>
+                </div>
+                <div class="info-content">
+                    <h3>Institution</h3>
+                    <p id="devInstList">University of Duhok</p>
+                    <p id="devDeptList" style="font-size: 0.9rem; color: var(--text-muted); margin-top: 2px;">Statistics Department</p>
+                </div>
+            </li>
+        </ul>
+
+        <a href="index.html" class="back-btn">
+            <i class="fa-solid fa-arrow-right"></i> ڤەگەڕیان بۆ لاپەڕەیێ سەرەکی
+        </a>
+    </div>
+
+    <script>
+        // Theme toggle logic (syncs with index.html)
+        const currentTheme = localStorage.getItem("theme");
+        if (currentTheme === "light") {
+            document.body.classList.add("light-mode");
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('themeToggleBtn').innerHTML = '<i class="fa-solid fa-sun"></i>';
+            });
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle("light-mode");
+            const btn = document.getElementById("themeToggleBtn");
+            if (document.body.classList.contains("light-mode")) {
+                localStorage.setItem("theme", "light");
+                btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            } else {
+                localStorage.setItem("theme", "dark");
+                btn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+            }
+        }
+    </script>
+
+    <!-- Firebase SDK Setup -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDJhJWAcPqLYrad2JRwROVkT9zjkiUN8yU",
+            authDomain: "aistatistics.firebaseapp.com",
+            projectId: "aistatistics",
+            storageBucket: "aistatistics.firebasestorage.app",
+            messagingSenderId: "293884805643",
+            appId: "1:293884805643:web:185b57a6f36484b3757d0e",
+            measurementId: "G-BDD7EJTQJP"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const devRef = ref(database, 'developer/info');
+
+        onValue(devRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                if (data.name) {
+                    document.getElementById('devNameTitle').textContent = data.name;
+                    document.getElementById('devNameList').textContent = data.name;
+                }
+                if (data.subtitle) {
+                    document.getElementById('devSubtitleText').textContent = data.subtitle;
+                }
+                if (data.institution) {
+                    document.getElementById('devInstList').textContent = data.institution;
+                }
+                if (data.department) {
+                    document.getElementById('devDeptList').textContent = data.department;
+                }
+                if (data.avatarBase64) {
+                    const avatarDiv = document.getElementById('devAvatar');
+                    avatarDiv.innerHTML = `<img src="${data.avatarBase64}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); padding: 2px;">`;
+                    avatarDiv.style.background = 'transparent';
+                    avatarDiv.style.border = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
