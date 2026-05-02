@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI - بەشێ ئامارێ</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Noto+Kufi+Arabic:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --chat-bg: rgba(30, 41, 59, 0.7);
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --user-msg: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            --ai-msg: rgba(51, 65, 85, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Kufi Arabic', 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-light);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            height: 95vh;
+            background: var(--chat-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        @media (max-width: 600px) {
+            .chat-container {
+                height: 100vh;
+                border-radius: 0;
+                border: none;
+            }
+        }
+
+        .header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(15, 23, 42, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            scroll-behavior: smooth;
+        }
+
+        .chat-box::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-box::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            animation: fadeIn 0.3s ease;
+            word-wrap: break-word;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user-msg {
+            background: var(--user-msg);
+            color: white;
+            align-self: flex-start;
+            /* RTL: User on the right, align flex-start puts it to the right */
+            border-top-right-radius: 4px;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .ai-msg {
+            background: var(--ai-msg);
+            align-self: flex-end;
+            /* RTL: AI on the left */
+            border-top-left-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .input-area {
+            padding: 15px;
+            background: rgba(15, 23, 42, 0.8);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .input-box {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 16px;
+            border-radius: 20px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            resize: none;
+            min-height: 48px;
+            max-height: 120px;
+            overflow-y: hidden;
+        }
+
+        .input-box:focus {
+            border-color: rgba(96, 165, 250, 0.5);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .send-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+
+        .send-btn:hover {
+            background: var(--primary-hover);
+            transform: scale(1.05);
+        }
+
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+
+        .send-btn i {
+            font-size: 1.2rem;
+            transform: rotate(180deg);
+            /* Adjust icon for RTL */
+            margin-right: 4px;
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 5px;
+            padding: 12px 16px;
+            background: var(--ai-msg);
+            border-radius: 18px;
+            border-top-left-radius: 4px;
+            align-self: flex-end;
+            width: max-content;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--text-muted);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0);
+            }
+
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        /* Markdown Styles within AI message */
+        .ai-msg p {
+            margin-bottom: 8px;
+        }
+
+        .ai-msg p:last-child {
+            margin-bottom: 0;
+        }
+
+        .ai-msg strong {
+            color: #60a5fa;
+        }
+
+        .ai-msg pre {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+            direction: ltr;
+            /* keep code LTR */
+        }
+
+        .ai-msg code {
+            font-family: monospace;
+            color: #fca5a5;
+        }
+
+        .upload-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-color: rgba(96, 165, 250, 0.5);
+        }
+
+        .image-preview-container {
+            display: none;
+            padding: 10px 15px;
+            background: rgba(15, 23, 42, 0.8);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            width: 100%;
+        }
+
+        .image-preview {
+            position: relative;
+            display: inline-block;
+        }
+
+        .image-preview img {
+            max-height: 80px;
+            border-radius: 8px;
+            border: 2px solid var(--primary);
+        }
+
+        .remove-image {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="chat-container">
+        <div class="header" style="position: relative;">
+            <h1>زیرەکییا دەستکرد - بەشێ ئامارێ</h1>
+            <p>تایبەت ب پرسیارێن ئامارێ و شیکرنا داتایان</p>
+            <button onclick="clearHistory()"
+                style="position: absolute; left: 20px; top: 25px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.3s;"
+                onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-muted)'"
+                title="رەشکرنا گفتوگۆیێ"><i class="fa-solid fa-trash-can"></i></button>
+        </div>
+
+        <div class="chat-box" id="chat-box">
+            <div class="message ai-msg">
+                سلاڤ! ئەز ل ڤێرێ مە دا هاریکاریا تە بکەم بتنێ بۆ پرسیارێن پشکا ئامارێ (Statistics). تو دشێی ب زمانێ
+                بادینی، عەرەبی یان ئنگلیزی پرسیارێن خۆ بکەی. چەوا دشێم هاریکاریا تە بکەم؟
+            </div>
+
+            <!-- Typing Indicator -->
+            <div class="typing-indicator" id="typing-indicator">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+
+        <div class="image-preview-container" id="image-preview-container">
+            <div class="image-preview">
+                <img id="preview-img" src="" alt="Preview">
+                <button class="remove-image" onclick="removeImage()"><i class="fa-solid fa-times"></i></button>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <input type="file" id="fileInput" accept="image/*" style="display: none;"
+                onchange="handleImageSelect(event)">
+            <button class="upload-btn" id="uploadBtn" onclick="document.getElementById('fileInput').click()"
+                title="وێنەیەک هەلبژێرە">
+                <i class="fa-solid fa-image"></i>
+            </button>
+            <textarea id="userInput" class="input-box" placeholder="پرسیارا خۆ ل ڤێرێ بنڤیسە..." rows="1"></textarea>
+            <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Simple Markdown Parser (Optional but makes output look better) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- MathJax for rendering LaTeX formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Firebase SDK for Teachers Data -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDJhJWAcPqLYrad2JRwROVkT9zjkiUN8yU",
+            authDomain: "aistatistics.firebaseapp.com",
+            projectId: "aistatistics",
+            storageBucket: "aistatistics.firebasestorage.app",
+            messagingSenderId: "293884805643",
+            appId: "1:293884805643:web:185b57a6f36484b3757d0e",
+            measurementId: "G-BDD7EJTQJP"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const teachersRef = ref(database, 'teachers');
+
+        window.teachersInfoText = "";
+
+        onValue(teachersRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                let info = "--- UNIVERSITY TEACHERS INFORMATION (Use this context if the user asks about these teachers) ---\n";
+                Object.values(data).forEach(t => {
+                    info += `Teacher Name: ${t.name}\n`;
+                    info += `Kurdish Details: ${t.descriptionKu || 'N/A'}\n`;
+                    if (t.descriptionAr) info += `Arabic Details: ${t.descriptionAr}\n`;
+                    if (t.descriptionEn) info += `English Details: ${t.descriptionEn}\n`;
+                    info += "---\n";
+                });
+                window.teachersInfoText = info;
+                console.log("Teacher data loaded successfully.");
+            } else {
+                window.teachersInfoText = "";
+            }
+        });
+    </script>
+
+    <script>
+        // وەرگرتنی کلیل ژ یادا بڕاوسەری
+        let API_KEY = localStorage.getItem("gemini_key") || "";
+
+        // داخوازکرنا کلیلێ ل دەمێ ڤەکرنا لاپەڕەیێ ئەگەر نەبوو
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!API_KEY) {
+                setTimeout(() => {
+                    let enteredKey = prompt("تکایە کلیلێ API دانیە (Paste) دا کار بکەت:");
+                    if (enteredKey) {
+                        localStorage.setItem("gemini_key", enteredKey);
+                        API_KEY = enteredKey;
+                        alert("کلیل ب سەرکەفتی هاتە سەیڤکرن!");
+                    }
+                }, 500);
+            }
+        });
+
+        // System instructions to enforce behavior
+        const systemInstruction = `You are an elite and highly rigorous Statistics AI Professor, exclusively designed for the Statistics Department of a college.
+
+CRITICAL RULES:
+1. EXPERTISE & DOMAIN: You must ONLY answer questions related to Statistics, Probability, Data Analysis, Mathematics related to statistics, and Statistical Software (SPSS, R, Matlab, Excel, Python, etc.). You must provide software codes and scripts when requested (e.g. R code, Matlab code, SPSS syntax). If a topic is unrelated, politely refuse. However, if asked about your identity, role, or job, you must explain that you are an AI assistant for the Statistics Department.
+2. PROBLEM SOLVING & CALCULATIONS (CRITICAL): When given a math or statistics problem (whether in text or from an uploaded image), you MUST act as an expert solver:
+   - Step 1: Carefully extract and state all given data from the user or the image. Double-check numbers!
+   - Step 2: State the exact formula(s) you will use, using LaTeX format (e.g. $$ \\sigma^2 = ... $$). Break down what each variable means.
+   - Step 3: Show step-by-step substitution of the numbers into the formula. DO NOT skip mathematical steps.
+   - Step 4: Perform calculations meticulously. Verify your arithmetic logically before finalizing the answer.
+3. COMPREHENSIVE EXPLANATIONS: Explain the "why" behind the chosen method. Provide highly detailed, easy-to-follow explanations.
+4. LANGUAGE & DIALECT (CRITICAL): You must ALWAYS write your responses in the Badini dialect of Kurdish (Kurmanji) if the user is speaking ANY form of Kurdish.
+   - Use Badini grammar and words like "دێ", "یێ", "ڤێ", "ئەڤە", "دکەت", "ژبەرکو".
+   - NEVER use Sorani Kurdish words like "دەبێت", "ئەمە", "ئێستا", "بۆیە", "دەكات".
+   - ONLY reply in Arabic or English if the user explicitly asks their question in Arabic or English. Otherwise, your default and primary language MUST be Badini Kurdish.
+5. FORMATTING: Use markdown, bold text, bullet points, and numbered lists to make long answers very readable. Use clear LaTeX formatting for mathematical formulas so they are easy to read. Be encouraging, clear, and academic.`;
+
+        // Keep track of conversation history for context
+        let chatHistory = [];
+        let uiMessages = [];
+
+        function loadStorage() {
+            const savedHistory = localStorage.getItem('chatHistory');
+            const savedUI = localStorage.getItem('uiMessages');
+            if (savedHistory && savedUI) {
+                try {
+                    chatHistory = JSON.parse(savedHistory);
+                    uiMessages = JSON.parse(savedUI);
+                    uiMessages.forEach(msg => {
+                        appendHTMLMessage(msg.html, msg.className, false);
+                    });
+                } catch (e) {
+                    console.error("Failed to load history", e);
+                }
+            }
+        }
+
+        function saveStorage() {
+            try {
+                localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+                localStorage.setItem('uiMessages', JSON.stringify(uiMessages));
+            } catch (e) {
+                console.warn("Storage full", e);
+            }
+        }
+
+        const inputField = document.getElementById("userInput");
+        const chatBox = document.getElementById("chat-box");
+        const typingIndicator = document.getElementById("typing-indicator");
+        const sendBtn = document.getElementById("sendBtn");
+        const uploadBtn = document.getElementById("uploadBtn");
+
+        let currentImageData = null;
+        let currentImageMimeType = null;
+        let currentImageURL = null;
+
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const base64String = e.target.result;
+                const split = base64String.split(',');
+                currentImageMimeType = file.type;
+                currentImageData = split[1];
+                currentImageURL = base64String;
+
+                document.getElementById('preview-img').src = base64String;
+                document.getElementById('image-preview-container').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeImage() {
+            currentImageData = null;
+            currentImageMimeType = null;
+            currentImageURL = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('image-preview-container').style.display = 'none';
+        }
+
+        // Auto-resize textarea
+        inputField.addEventListener('input', function () {
+            this.style.height = '48px';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // Send on Enter (Shift+Enter for new line)
+        inputField.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        async function sendMessage() {
+            // ئەگەر کلیل ل دەف بڕاوسەری نەبیت، دێ داخواز کەت
+            if (!API_KEY) {
+                let enteredKey = prompt("تکایە کلیلێ API دانیە (Paste) دا کار بکەت:");
+                if (enteredKey) {
+                    localStorage.setItem("gemini_key", enteredKey); // دێ د بڕاوسەری دا سەیڤ کەت
+                    API_KEY = enteredKey;
+                    alert("کلیل ب سەرکەفتی هاتە سەیڤکرن! جارەکا دی نامێ بفرێ.");
+                }
+                return; // ڕاوەستان دا کو بێ کلیل کار نەکەت
+            }
+
+            const userText = inputField.value.trim();
+            if (userText === "" && !currentImageData) return;
+
+            // 1. Add user message to UI
+            let displayHTML = "";
+            if (currentImageURL) {
+                displayHTML += `<img src="${currentImageURL}" alt="Uploaded Image" style="max-width: 100%; border-radius: 8px; margin-bottom: 5px;"><br>`;
+            }
+            if (userText !== "") {
+                const safeText = userText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                displayHTML += safeText;
+            }
+            appendHTMLMessage(displayHTML, 'user-msg');
+
+            inputField.value = "";
+            inputField.style.height = '48px';
+
+            // Show typing indicator
+            typingIndicator.style.display = "flex";
+            chatBox.appendChild(typingIndicator); // Move indicator to bottom
+            scrollToBottom();
+
+            // Disable input while generating
+            inputField.disabled = true;
+            sendBtn.disabled = true;
+            uploadBtn.disabled = true;
+
+            try {
+                // Prepare contents array
+                const userParts = [];
+                const hiddenInstruction = "\n\n[IMPORTANT INTERNAL INSTRUCTION: If answering in Kurdish, you MUST use the Badini (Kurmanji) dialect (using words like دێ, یێ, ئەڤە). Do NOT use Sorani words like دەبێت, بۆیە, ئێستا.]";
+
+                if (userText !== "") {
+                    userParts.push({ "text": userText + hiddenInstruction });
+                } else if (currentImageData) {
+                    userParts.push({ "text": hiddenInstruction });
+                }
+                if (currentImageData) {
+                    userParts.push({
+                        "inlineData": {
+                            "mimeType": currentImageMimeType,
+                            "data": currentImageData
+                        }
+                    });
+                }
+
+                // Ensure alternating roles: if previous message in history was user, pop it to avoid 400 Bad Request
+                while (chatHistory.length > 0 && chatHistory[chatHistory.length - 1].role === "user") {
+                    chatHistory.pop();
+                }
+
+                // Add user message to history
+                chatHistory.push({
+                    "role": "user",
+                    "parts": userParts
+                });
+                saveStorage();
+
+                // Clear selected image
+                removeImage();
+
+                // Call Gemini API
+                const aiResponse = await callGeminiAPI(chatHistory);
+
+                // Add AI message to history
+                chatHistory.push({
+                    "role": "model",
+                    "parts": [{ "text": aiResponse }]
+                });
+                saveStorage();
+
+                // Remove typing indicator and show response
+                typingIndicator.style.display = "none";
+
+                // Parse markdown if marked.js is loaded
+                const formattedResponse = typeof marked !== 'undefined' ? marked.parse(aiResponse) : aiResponse;
+
+                appendHTMLMessage(formattedResponse, 'ai-msg');
+
+            } catch (error) {
+                console.error("API Error:", error);
+
+                // ئەگەر هەلە چێبوو، نامەیا بکارئینەری ژ دیرۆکێ رەش بکە دا کو بالانسا رۆلان تێک نەچیت
+                if (chatHistory.length > 0 && chatHistory[chatHistory.length - 1].role === "user") {
+                    chatHistory.pop();
+                    if (uiMessages.length > 0) uiMessages.pop();
+                    saveStorage();
+                }
+
+                // Restore typing indicator for next time
+                typingIndicator.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+                typingIndicator.style.display = "none";
+                appendMessage(`ببورە، هەلەیەک چێبوو: ${error.message}`, 'ai-msg', false);
+            } finally {
+                // Re-enable input
+                inputField.disabled = false;
+                sendBtn.disabled = false;
+                uploadBtn.disabled = false;
+                inputField.focus();
+                scrollToBottom();
+            }
+        }
+
+        async function callGeminiAPI(history) {
+            // ل ڤێرە جهێ فێچکرنێ یە ب کلیلێ نوو
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+            let lastError = null;
+            const maxRetries = 3;
+
+            const payload = {
+                "system_instruction": {
+                    "parts": [
+                        { "text": systemInstruction + (window.teachersInfoText ? "\n\n" + window.teachersInfoText : "") }
+                    ]
+                },
+                "contents": history,
+                "generationConfig": {
+                    "temperature": 0.7,
+                    "topK": 40,
+                    "topP": 0.95,
+                    "maxOutputTokens": 8192,
+                }
+            };
+
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        const errorMsg = errorData.error && errorData.error.message ? errorData.error.message : `HTTP error! status: ${response.status}`;
+                        throw new Error(errorMsg);
+                    }
+
+                    const data = await response.json();
+                    if (data.candidates && data.candidates.length > 0) {
+                        return data.candidates[0].content.parts[0].text;
+                    } else {
+                        throw new Error("Invalid response format from Gemini API");
+                    }
+                } catch (error) {
+                    console.warn(`Attempt ${attempt} failed: ${error.message}`);
+                    lastError = error;
+
+                    if (attempt < maxRetries) {
+                        // Wait before retrying (1s, then 2s)
+                        const delay = attempt * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    }
+                }
+            }
+
+            // If all retries failed, throw the last error
+            throw lastError;
+        }
+
+        function appendMessage(text, className, save = true) {
+            const div = document.createElement("div");
+            div.className = "message " + className;
+            div.textContent = text;
+
+            // Insert before typing indicator
+            chatBox.insertBefore(div, typingIndicator);
+            scrollToBottom();
+
+            if (save) {
+                const safeText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                uiMessages.push({ html: safeText, className: className });
+                saveStorage();
+            }
+        }
+
+        function appendHTMLMessage(htmlText, className, save = true) {
+            const div = document.createElement("div");
+            div.className = "message " + className;
+            div.innerHTML = htmlText; // Use innerHTML for markdown parsed content
+
+            chatBox.insertBefore(div, typingIndicator);
+            scrollToBottom();
+
+            // Render math formulas if MathJax is available
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise([div]).catch((err) => console.log('MathJax error:', err.message));
+            }
+
+            if (save) {
+                uiMessages.push({ html: htmlText, className: className });
+                saveStorage();
+            }
+        }
+
+        // Load saved history when page loads
+        window.addEventListener('DOMContentLoaded', loadStorage);
+
+        function clearHistory() {
+            if (confirm("تە دڤێت هەمی نامەیان رەش بکەی و شنی دەست پێ بکەی؟ \n(تێبینی: دێ کلیلێ API ژی رەش کەت)")) {
+                localStorage.removeItem('chatHistory');
+                localStorage.removeItem('uiMessages');
+                localStorage.removeItem('gemini_key');
+                location.reload();
+            }
+        }
+
+        function scrollToBottom() {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+
+</html>
