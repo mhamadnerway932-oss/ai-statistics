@@ -335,6 +335,113 @@
             justify-content: center;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         }
+
+        /* API Key Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--chat-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: translateY(-20px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .modal-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .modal-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px 16px;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            text-align: center;
+            direction: ltr;
+        }
+
+        .modal-input:focus {
+            border-color: rgba(96, 165, 250, 0.5);
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .modal-btn {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .modal-btn:active {
+            transform: translateY(0);
+        }
     </style>
 </head>
 
@@ -382,6 +489,18 @@
             <button class="send-btn" id="sendBtn" onclick="sendMessage()">
                 <i class="fa-solid fa-paper-plane"></i>
             </button>
+        </div>
+    </div>
+
+    <!-- API Key Modal -->
+    <div class="modal-overlay" id="apiModal">
+        <div class="modal-content">
+            <i class="fa-solid fa-key modal-icon"></i>
+            <h2 class="modal-title">کلیل یا دەستی محمدی دا </h2>
+            <p class="modal-desc">تکایە کلیلێ خۆ ل ڤێرە دانیە دا کو سیستەم کار بکەت.</p>
+            <input type="password" id="modalApiKeyInput" class="modal-input"
+                placeholder="کلیلێ خۆ ل ڤێرە پەیس (Paste) بکە..." autocomplete="off">
+            <button class="modal-btn" onclick="saveApiKey()">سەیڤ بکە و بەردەوام بە</button>
         </div>
     </div>
 
@@ -447,15 +566,41 @@
         window.addEventListener('DOMContentLoaded', () => {
             if (!API_KEY) {
                 setTimeout(() => {
-                    let enteredKey = prompt("تکایە کلیلێ API دانیە (Paste) دا کار بکەت:");
-                    if (enteredKey) {
-                        localStorage.setItem("gemini_key", enteredKey);
-                        API_KEY = enteredKey;
-                        alert("کلیل ب سەرکەفتی هاتە سەیڤکرن!");
-                    }
+                    showApiModal();
                 }, 500);
             }
         });
+
+        function showApiModal() {
+            const modal = document.getElementById('apiModal');
+            modal.style.display = 'flex';
+            // Trigger reflow
+            void modal.offsetWidth;
+            modal.classList.add('show');
+            document.getElementById('modalApiKeyInput').focus();
+        }
+
+        function saveApiKey() {
+            const enteredKey = document.getElementById('modalApiKeyInput').value.trim();
+            if (enteredKey) {
+                localStorage.setItem("gemini_key", enteredKey);
+                API_KEY = enteredKey;
+
+                const modal = document.getElementById('apiModal');
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300); // Wait for transition
+            } else {
+                const input = document.getElementById('modalApiKeyInput');
+                input.style.borderColor = '#ef4444';
+                input.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    input.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                    input.style.animation = '';
+                }, 1000);
+            }
+        }
 
         // System instructions to enforce behavior
         const systemInstruction = `You are an elite and highly rigorous Statistics AI Professor, exclusively designed for the Statistics Department of a college.
@@ -556,12 +701,7 @@ CRITICAL RULES:
         async function sendMessage() {
             // ئەگەر کلیل ل دەف بڕاوسەری نەبیت، دێ داخواز کەت
             if (!API_KEY) {
-                let enteredKey = prompt("تکایە کلیلێ API دانیە (Paste) دا کار بکەت:");
-                if (enteredKey) {
-                    localStorage.setItem("gemini_key", enteredKey); // دێ د بڕاوسەری دا سەیڤ کەت
-                    API_KEY = enteredKey;
-                    alert("کلیل ب سەرکەفتی هاتە سەیڤکرن! جارەکا دی نامێ بفرێ.");
-                }
+                showApiModal();
                 return; // ڕاوەستان دا کو بێ کلیل کار نەکەت
             }
 
@@ -766,10 +906,9 @@ CRITICAL RULES:
         window.addEventListener('DOMContentLoaded', loadStorage);
 
         function clearHistory() {
-            if (confirm("تە دڤێت هەمی نامەیان رەش بکەی و شنی دەست پێ بکەی؟ \n(تێبینی: دێ کلیلێ API ژی رەش کەت)")) {
+            if (confirm("تە دڤێت هەمی نامەیان رەش بکەی و شنی دەست پێ بکەی؟")) {
                 localStorage.removeItem('chatHistory');
                 localStorage.removeItem('uiMessages');
-                localStorage.removeItem('gemini_key');
                 location.reload();
             }
         }
