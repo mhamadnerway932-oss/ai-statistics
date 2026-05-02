@@ -57,16 +57,19 @@
             background-attachment: fixed;
             color: var(--text-light);
             height: 100vh;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }
 
         .chat-container {
             width: 100%;
             max-width: 600px;
             height: 95vh;
+            height: 95dvh;
             background: var(--chat-bg);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
@@ -81,13 +84,14 @@
         @media (max-width: 600px) {
             .chat-container {
                 height: 100vh;
+                height: 100dvh;
                 border-radius: 0;
                 border: none;
             }
         }
 
         .header {
-            padding: 20px;
+            padding: 15px;
             text-align: center;
             border-bottom: 1px solid var(--border-light);
             background: var(--header-bg);
@@ -95,19 +99,33 @@
             flex-direction: column;
             align-items: center;
             gap: 5px;
+            position: relative;
         }
 
         .header h1 {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 600;
             background: linear-gradient(to right, #60a5fa, #c084fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-top: 35px;
+            padding: 0 10px;
         }
 
         .header p {
             font-size: 0.85rem;
             color: var(--text-muted);
+        }
+
+        @media (min-width: 480px) {
+            .header {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+                margin-top: 0;
+                padding: 0 80px;
+            }
         }
 
         .chat-box {
@@ -173,8 +191,15 @@
             background: var(--input-area-bg);
             border-top: 1px solid var(--border-light);
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: flex-end;
+        }
+
+        @media (max-width: 380px) {
+            .input-area {
+                padding: 10px;
+                gap: 5px;
+            }
         }
 
         .input-box {
@@ -212,6 +237,17 @@
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 380px) {
+            .send-btn {
+                width: 42px;
+                height: 42px;
+            }
+            .send-btn i {
+                font-size: 1rem;
+            }
         }
 
         .send-btn:hover {
@@ -333,6 +369,14 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 380px) {
+            .upload-btn {
+                width: 42px;
+                height: 42px;
+            }
         }
 
         .upload-btn:hover {
@@ -490,19 +534,19 @@
 <body>
 
     <div class="chat-container">
-        <div class="header" style="position: relative;">
+        <div class="header">
             <h1>زیرەکییا دەستکرد - بەشێ ئامارێ</h1>
             <p>تایبەت ب پرسیارێن ئامارێ و شیکرنا داتایان</p>
             <button onclick="clearHistory()"
-                style="position: absolute; left: 20px; top: 25px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.3s;"
+                style="position: absolute; left: 15px; top: 15px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.3s;"
                 onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-muted)'"
                 title="رەشکرنا گفتوگۆیێ"><i class="fa-solid fa-trash-can"></i></button>
             <a href="about.html"
-                style="position: absolute; right: 60px; top: 25px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.3s; text-decoration: none;"
+                style="position: absolute; right: 55px; top: 15px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.3s; text-decoration: none;"
                 onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'"
                 title="دەربارەی گەشەپێدەر"><i class="fa-solid fa-circle-user"></i></a>
             <button onclick="toggleTheme()" id="themeToggleBtn"
-                style="position: absolute; right: 20px; top: 25px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.3s;"
+                style="position: absolute; right: 15px; top: 15px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.3s;"
                 onmouseover="this.style.color='var(--text-light)'" onmouseout="this.style.color='var(--text-muted)'"
                 title="گۆهۆڕینا ڕەنگێ سایتی"><i class="fa-solid fa-moon"></i></button>
         </div>
