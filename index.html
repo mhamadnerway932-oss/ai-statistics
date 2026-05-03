@@ -121,6 +121,7 @@
             .header {
                 padding: 20px;
             }
+
             .header h1 {
                 font-size: 1.5rem;
                 margin-top: 0;
@@ -245,6 +246,7 @@
                 width: 42px;
                 height: 42px;
             }
+
             .send-btn i {
                 font-size: 1rem;
             }
@@ -541,8 +543,12 @@
                 style="position: absolute; left: 15px; top: 15px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.3s;"
                 onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-muted)'"
                 title="رەشکرنا گفتوگۆیێ"><i class="fa-solid fa-trash-can"></i></button>
+            <button onclick="showShareModal()" id="shareBtn"
+                style="position: absolute; right: 55px; top: 15px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.3s;"
+                onmouseover="this.style.color='#10b981'" onmouseout="this.style.color='var(--text-muted)'"
+                title="بەشداریکرن (Share)"><i class="fa-solid fa-share-nodes"></i></button>
             <a href="about.html"
-                style="position: absolute; right: 55px; top: 15px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.3s; text-decoration: none;"
+                style="position: absolute; right: 95px; top: 15px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.3s; text-decoration: none;"
                 onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'"
                 title="دەربارەی گەشەپێدەر"><i class="fa-solid fa-circle-user"></i></a>
             <button onclick="toggleTheme()" id="themeToggleBtn"
@@ -586,6 +592,38 @@
             <button class="send-btn" id="sendBtn" onclick="sendMessage()">
                 <i class="fa-solid fa-paper-plane"></i>
             </button>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="modal-overlay" id="shareModal" onclick="if(event.target === this) closeShareModal()">
+        <div class="modal-content">
+            <i class="fa-solid fa-share-nodes modal-icon"
+                style="background: linear-gradient(135deg, #10b981, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+            <h2 class="modal-title">پڕۆژەی بەشدار بکە</h2>
+            <p class="modal-desc">لینکێ پڕۆژەی بۆ هەڤالێن خۆ بفرێکه یان کۆپی بکە.</p>
+
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                <button class="modal-btn"
+                    style="background: #25D366; display: flex; align-items: center; justify-content: center; gap: 10px;"
+                    onclick="shareVia('whatsapp')">
+                    <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> واتسئەپ
+                </button>
+                <button class="modal-btn"
+                    style="background: #0088cc; display: flex; align-items: center; justify-content: center; gap: 10px;"
+                    onclick="shareVia('telegram')">
+                    <i class="fa-brands fa-telegram" style="font-size: 1.2rem;"></i> تێلەگرام
+                </button>
+                <button id="copyLinkBtn" class="modal-btn"
+                    style="background: #64748b; display: flex; align-items: center; justify-content: center; gap: 10px;"
+                    onclick="shareVia('copy')">
+                    <i class="fa-solid fa-link" style="font-size: 1.2rem;"></i> کۆپی لینک
+                </button>
+            </div>
+
+            <button class="modal-btn"
+                style="background: transparent; border: 1px solid var(--border-color); color: var(--text-light); box-shadow: none;"
+                onclick="closeShareModal()">داخستن</button>
         </div>
     </div>
 
@@ -717,6 +755,44 @@
                     input.style.borderColor = 'rgba(255, 255, 255, 0.1)';
                     input.style.animation = '';
                 }, 1000);
+            }
+        }
+
+        function showShareModal() {
+            const modal = document.getElementById('shareModal');
+            modal.style.display = 'flex';
+            void modal.offsetWidth;
+            modal.classList.add('show');
+        }
+
+        function closeShareModal() {
+            const modal = document.getElementById('shareModal');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        function shareVia(platform) {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('زیرەکییا دەستکرد - بەشێ ئامارێ 📊\nئەڤە پڕۆژەیەکێ تایبەتە بۆ پرسیارێن ئامارێ و شیکرنا داتایان:\n\n');
+
+            if (platform === 'whatsapp') {
+                window.open(`https://api.whatsapp.com/send?text=${text}${url}`, '_blank');
+            } else if (platform === 'telegram') {
+                window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
+            } else if (platform === 'copy') {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    const copyBtn = document.getElementById('copyLinkBtn');
+                    const originalText = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '<i class="fa-solid fa-check" style="font-size: 1.2rem;"></i> کۆپی بوو!';
+                    copyBtn.style.background = '#10b981';
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalText;
+                        copyBtn.style.background = '#64748b';
+                        closeShareModal();
+                    }, 1500);
+                });
             }
         }
 
