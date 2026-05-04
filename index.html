@@ -105,13 +105,15 @@
             text-align: center;
             border-bottom: 1px solid var(--border-light);
             background: var(--header-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 5px;
             position: relative;
+            z-index: 20;
             flex-shrink: 0;
-            z-index: 10;
         }
 
         .header h1 {
@@ -206,8 +208,6 @@
             display: flex;
             gap: 8px;
             align-items: flex-end;
-            flex-shrink: 0;
-            z-index: 10;
         }
 
         @media (max-width: 380px) {
