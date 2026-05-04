@@ -56,20 +56,22 @@
                 radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
             background-attachment: fixed;
             color: var(--text-light);
-            height: 100vh;
-            height: 100dvh;
+            min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            overflow: hidden;
+            justify-content: flex-start;
+            padding-top: 2.5vh;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         .chat-container {
-            width: 100%;
+            width: 95%;
             max-width: 600px;
-            height: 95vh;
-            height: 95dvh;
+            height: 90vh;
+            height: 90dvh;
             background: var(--chat-bg);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
@@ -79,14 +81,22 @@
             flex-direction: column;
             overflow: hidden;
             box-shadow: 0 25px 50px -12px var(--shadow-color);
+            flex-shrink: 0;
+            margin-bottom: 10px;
         }
 
         @media (max-width: 600px) {
+            body {
+                padding-top: 10px;
+            }
+
             .chat-container {
-                height: 100vh;
-                height: 100dvh;
-                border-radius: 0;
-                border: none;
+                width: 95%;
+                height: 88vh;
+                height: 88dvh;
+                border-radius: 20px;
+                border: 1px solid var(--border-color);
+                margin-bottom: 15px;
             }
         }
 
@@ -530,6 +540,179 @@
         .modal-btn:active {
             transform: translateY(0);
         }
+
+        .menu-container {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-btn:hover {
+            color: var(--text-light);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--chat-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px var(--shadow-color);
+            min-width: 200px;
+            z-index: 1000;
+            overflow: hidden;
+            margin-top: 10px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            animation: slideDown 0.2s ease forwards;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-light);
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.95rem;
+            width: 100%;
+            background: none;
+            text-align: right;
+            border-left: none;
+            border-right: none;
+            border-top: none;
+            font-family: inherit;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: var(--input-bg);
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .developer-footer {
+            width: 100%;
+            padding: 20px 0 30px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .footer-links button {
+            background: none;
+            border: none;
+            color: #10b981;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            font-weight: 600;
+            transition: opacity 0.3s;
+        }
+        
+        .footer-links button:hover {
+            opacity: 0.8;
+        }
+
+        .footer-socials {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            direction: ltr;
+        }
+
+        .social-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.light-mode .social-circle {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--text-muted);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .social-circle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            color: #10b981;
+        }
+
+        body.light-mode .social-circle:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-copyright {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            direction: ltr;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+        }
     </style>
 </head>
 
@@ -539,22 +722,32 @@
         <div class="header">
             <h1>زیرەکییا دەستکرد - بەشێ ئامارێ</h1>
             <p>تایبەت ب پرسیارێن ئامارێ و شیکرنا داتایان</p>
-            <button onclick="clearHistory()"
-                style="position: absolute; left: 15px; top: 15px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.3s;"
-                onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-muted)'"
-                title="رەشکرنا گفتوگۆیێ"><i class="fa-solid fa-trash-can"></i></button>
-            <button onclick="showShareModal()" id="shareBtn"
-                style="position: absolute; right: 55px; top: 15px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.3s;"
-                onmouseover="this.style.color='#10b981'" onmouseout="this.style.color='var(--text-muted)'"
-                title="بەشداریکرن (Share)"><i class="fa-solid fa-share-nodes"></i></button>
-            <a href="about.html"
-                style="position: absolute; right: 95px; top: 15px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.3s; text-decoration: none;"
-                onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'"
-                title="دەربارەی گەشەپێدەر"><i class="fa-solid fa-circle-user"></i></a>
-            <button onclick="toggleTheme()" id="themeToggleBtn"
-                style="position: absolute; right: 15px; top: 15px; background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; transition: color 0.3s;"
-                onmouseover="this.style.color='var(--text-light)'" onmouseout="this.style.color='var(--text-muted)'"
-                title="گۆهۆڕینا ڕەنگێ سایتی"><i class="fa-solid fa-moon"></i></button>
+            <div class="menu-container">
+                <button class="menu-btn" onclick="toggleMenu()" title="لیستە (Menu)">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <button class="dropdown-item" onclick="toggleTheme()" id="themeToggleMenuBtn">
+                        <i class="fa-solid fa-moon"></i> <span>گۆهۆڕینا ڕەنگێ سایتی</span>
+                    </button>
+                    <button class="dropdown-item" onclick="showShareModal()">
+                        <i class="fa-solid fa-share-nodes"></i> <span>بەشداریکرن (Share)</span>
+                    </button>
+                    <button class="dropdown-item" onclick="showFeedbackModal()">
+                        <i class="fa-solid fa-headset" style="color: #10b981;"></i> <span>پەیوەندی و فیدبەک</span>
+                    </button>
+                    <button class="dropdown-item" onclick="showTermsModal()">
+                        <i class="fa-solid fa-shield-halved" style="color: #10b981;"></i> <span>مەرجێن بکارئینانێ</span>
+                    </button>
+                    <a href="about.html" class="dropdown-item">
+                        <i class="fa-solid fa-circle-user"></i> <span>دەربارەی گەشەپێدەر</span>
+                    </a>
+                    <button class="dropdown-item" onclick="clearHistory()">
+                        <i class="fa-solid fa-trash-can" style="color: #ef4444;"></i> <span
+                            style="color: #ef4444;">رەشکرنا گفتوگۆیێ</span>
+                    </button>
+                </div>
+            </div>
         </div>
 
         <div class="chat-box" id="chat-box">
@@ -588,9 +781,80 @@
             <button class="upload-btn" id="voiceBtn" onclick="toggleVoiceRecording()" title="گەڕیانا دەنگی (Siri)">
                 <i class="fa-solid fa-microphone"></i>
             </button>
-            <textarea id="userInput" class="input-box" placeholder="پرسیارا خۆ ل ڤێرێ بنڤیسە..." rows="1"></textarea>
+            <textarea id="userInput" class="input-box" placeholder="پسیارا خو ل ڤێرێ بنڤیسە..." rows="1"></textarea>
             <button class="send-btn" id="sendBtn" onclick="sendMessage()">
                 <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <div class="developer-footer">
+        <div class="footer-links">
+            <button onclick="showTermsModal()"><i class="fa-solid fa-shield-halved"></i> مەرجێن بکارئینانێ</button>
+            <button onclick="showFeedbackModal()"><i class="fa-solid fa-headset"></i> پەیوەندی و فیدبەک</button>
+        </div>
+        
+        <div class="footer-socials">
+            <a href="https://t.me/Muhamadsalm" target="_blank" class="social-circle"><i class="fa-brands fa-telegram"></i></a>
+            <a href="https://www.instagram.com/mahamad._nerway?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="social-circle"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+        
+        <div class="footer-copyright">
+            DEVELOPER MOHAMMED SALIM &copy; 2026
+        </div>
+    </div>
+
+    <!-- Terms Modal -->
+    <div class="modal-overlay" id="termsModal" onclick="if(event.target === this) closeTermsModal()">
+        <div class="modal-content" style="max-width: 500px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <button onclick="closeTermsModal()"
+                    style="background: none; border: none; color: #ef4444; font-size: 1.2rem; cursor: pointer;"><i
+                        class="fa-solid fa-times"></i></button>
+                <h2 class="modal-title" style="margin-bottom: 0; display: flex; align-items: center; gap: 10px;">
+                    مەرجێن بکارئینانێ <i class="fa-solid fa-shield-halved" style="color: #10b981;"></i></h2>
+            </div>
+            
+            <div class="modal-desc" style="text-align: right; direction: rtl; line-height: 1.8; font-size: 0.95rem; max-height: 300px; overflow-y: auto; padding-left: 10px; margin-bottom: 20px; color: var(--text-light);">
+                <p style="margin-bottom: 10px;"><strong>١. بکارئینانا دروست:</strong> پێدڤییە ئەڤ پلاتفۆرمە بتنێ بۆ مەرەمێن فێربوونێ و پرسیارێن گرێدای بوارێ ئامارێ (Statistics) بهێتە بکارئینان.</p>
+                <p style="margin-bottom: 10px;"><strong>٢. پاراستنا داتایان:</strong> ئەم چ زانیاریێن کەسی یێن هەستیار یێن تە هەلناگرین. ئەو چات و پەیامێن دهێنە فرێکرن بتنێ بۆ باشترکرنا سیستەمی دهێنە بکارئینان.</p>
+                <p style="margin-bottom: 10px;"><strong>٣. بەرپرسیارەتی:</strong> بەرسڤێن زیرەکییا دەستکرد ڕەنگە هەمی دەمان ١٠٠٪ د دروست نەبن، پێدڤییە بۆ بڕیارێن گرنگ پشت ب سەرچاڤەیێن باوەڕپێکری گرێدەی.</p>
+                <p><strong>٤. مافێن بەلاڤکرنێ:</strong> هەمی مافێن ڤی وێبسایتی بۆ گەشەپێدەری پاراستینە.</p>
+            </div>
+            
+            <button class="modal-btn"
+                style="background: #10b981; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; border-radius: 8px;"
+                onclick="closeTermsModal()">
+                ڕازی مە <i class="fa-solid fa-check"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div class="modal-overlay" id="feedbackModal" onclick="if(event.target === this) closeFeedbackModal()">
+        <div class="modal-content" style="max-width: 500px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <button onclick="closeFeedbackModal()"
+                    style="background: none; border: none; color: #ef4444; font-size: 1.2rem; cursor: pointer;"><i
+                        class="fa-solid fa-times"></i></button>
+                <h2 class="modal-title" style="margin-bottom: 0; display: flex; align-items: center; gap: 10px;">
+                    ڕاپۆرتکرنا ئاریشەیێ <i class="fa-solid fa-triangle-exclamation" style="color: #f59e0b;"></i></h2>
+            </div>
+
+            <p class="modal-desc" style="text-align: right; direction: rtl; line-height: 1.6; font-size: 0.95rem;">
+                ئەڤ فۆرمە یا تایبەتە بۆ گەهاندنا ئاریشەیان. ئەگەر تە ئاریشەیەک دیت، هیڤییە ل ڤێرێ بۆ مە بنڤێسە و فرێکە
+                داکو ئەم زووتر چارەسەر بکەین.
+            </p>
+
+            <textarea id="feedbackText" class="modal-input"
+                placeholder="کورتیا ئاریشەیێ یان پەیڤا خەلەت ل ڤێرێ بنڤیسە..."
+                style="text-align: right; direction: rtl; resize: vertical; min-height: 120px; font-family: inherit; margin-bottom: 20px; border-radius: 8px;"></textarea>
+
+            <button class="modal-btn"
+                style="background: #10b981; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; border-radius: 8px;"
+                onclick="sendFeedback()">
+                فرێکرنا ڕاپۆرتێ <i class="fa-solid fa-paper-plane"></i>
             </button>
         </div>
     </div>
@@ -656,7 +920,7 @@
     <!-- Firebase SDK for Teachers Data -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+        import { getDatabase, ref, onValue, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDJhJWAcPqLYrad2JRwROVkT9zjkiUN8yU",
@@ -671,6 +935,21 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const teachersRef = ref(database, 'teachers');
+        const feedbacksRef = ref(database, 'feedbacks');
+
+        window.submitFeedbackToFirebase = async function(text) {
+            try {
+                await push(feedbacksRef, {
+                    text: text,
+                    timestamp: serverTimestamp(),
+                    status: 'new'
+                });
+                return true;
+            } catch (error) {
+                console.error("Error submitting feedback: ", error);
+                return false;
+            }
+        };
 
         window.teachersInfoText = "";
 
@@ -699,21 +978,39 @@
         if (currentTheme === "light") {
             document.body.classList.add("light-mode");
             document.addEventListener('DOMContentLoaded', () => {
-                document.getElementById('themeToggleBtn').innerHTML = '<i class="fa-solid fa-sun"></i>';
+                const btn = document.getElementById('themeToggleMenuBtn');
+                if (btn) btn.innerHTML = '<i class="fa-solid fa-sun"></i> <span>گۆهۆڕینا ڕەنگێ سایتی</span>';
             });
         }
 
         function toggleTheme() {
             document.body.classList.toggle("light-mode");
-            const btn = document.getElementById("themeToggleBtn");
+            const btn = document.getElementById("themeToggleMenuBtn");
             if (document.body.classList.contains("light-mode")) {
                 localStorage.setItem("theme", "light");
-                btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+                if (btn) btn.innerHTML = '<i class="fa-solid fa-sun"></i> <span>گۆهۆڕینا ڕەنگێ سایتی</span>';
             } else {
                 localStorage.setItem("theme", "dark");
-                btn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+                if (btn) btn.innerHTML = '<i class="fa-solid fa-moon"></i> <span>گۆهۆڕینا ڕەنگێ سایتی</span>';
             }
         }
+
+        function toggleMenu() {
+            document.getElementById("dropdownMenu").classList.toggle("show");
+        }
+
+        // Close the dropdown menu if the user clicks outside of it
+        window.addEventListener('click', function (event) {
+            if (!event.target.closest('.menu-container')) {
+                var dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        });
 
         // وەرگرتنی کلیل ژ یادا بڕاوسەری
         let API_KEY = localStorage.getItem("gemini_key") || "";
@@ -756,6 +1053,60 @@
                     input.style.animation = '';
                 }, 1000);
             }
+        }
+
+        function showFeedbackModal() {
+            const modal = document.getElementById('feedbackModal');
+            modal.style.display = 'flex';
+            void modal.offsetWidth;
+            modal.classList.add('show');
+        }
+
+        function closeFeedbackModal() {
+            const modal = document.getElementById('feedbackModal');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        function showTermsModal() {
+            const modal = document.getElementById('termsModal');
+            modal.style.display = 'flex';
+            void modal.offsetWidth;
+            modal.classList.add('show');
+        }
+
+        function closeTermsModal() {
+            const modal = document.getElementById('termsModal');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        async function sendFeedback() {
+            const text = document.getElementById('feedbackText').value.trim();
+            if (!text) return;
+
+            const btn = document.querySelector('#feedbackModal .modal-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> د فرێکرنێ دایە...';
+            btn.style.background = '#f59e0b';
+            
+            if (window.submitFeedbackToFirebase) {
+                await window.submitFeedbackToFirebase(text);
+            }
+
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> سوپاس بۆ تە، ڕاپۆرت گەهشت!';
+            btn.style.background = '#3b82f6';
+            document.getElementById('feedbackText').value = '';
+
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = '#10b981';
+                closeFeedbackModal();
+            }, 2000);
         }
 
         function showShareModal() {
