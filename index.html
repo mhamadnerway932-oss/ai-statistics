@@ -873,6 +873,7 @@
                 بادینی، عەرەبی یان ئنگلیزی پرسیارێن خۆ بکەی. چەوا دشێم هاریکاریا تە بکەم؟
                 <div class="msg-actions">
                     <button onclick="copyMsg(this)" title="کۆپیکرن (Copy)"><i class="fa-regular fa-copy"></i></button>
+                    <button onclick="speakMsg(this)" title="خواندن ب دەنگی (Speak)"><i class="fa-solid fa-volume-high"></i></button>
                 </div>
             </div>
 
@@ -1604,6 +1605,7 @@ CRITICAL RULES:
                 actionsDiv.className = "msg-actions";
                 actionsDiv.innerHTML = `
                     <button onclick="copyMsg(this)" title="کۆپیکرن (Copy)"><i class="fa-regular fa-copy"></i></button>
+                    <button onclick="speakMsg(this)" title="خواندن ب دەنگی (Speak)"><i class="fa-solid fa-volume-high"></i></button>
                 `;
                 div.appendChild(actionsDiv);
             }
@@ -1629,6 +1631,7 @@ CRITICAL RULES:
                 actionsDiv.className = "msg-actions";
                 actionsDiv.innerHTML = `
                     <button onclick="copyMsg(this)" title="کۆپیکرن (Copy)"><i class="fa-regular fa-copy"></i></button>
+                    <button onclick="speakMsg(this)" title="خواندن ب دەنگی (Speak)"><i class="fa-solid fa-volume-high"></i></button>
                 `;
                 div.appendChild(actionsDiv);
             }
@@ -1775,6 +1778,56 @@ CRITICAL RULES:
                 btn.innerHTML = '<i class="fa-solid fa-check" style="color: #10b981;"></i>';
                 setTimeout(() => btn.innerHTML = originalIcon, 2000);
             });
+        }
+
+        function speakMsg(btn) {
+            if (!('speechSynthesis' in window)) {
+                showToast("ببورە، بڕاوسەرێ تە پشتگیرییا خاندنا دەنگی ناکەت.");
+                return;
+            }
+
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                if (btn.innerHTML.includes('fa-stop')) {
+                    btn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+                    return;
+                }
+            }
+
+            const messageDiv = btn.closest('.message');
+            const clone = messageDiv.cloneNode(true);
+            const actions = clone.querySelector('.msg-actions');
+            if (actions) actions.remove();
+
+            let textToSpeak = clone.innerText.trim();
+            
+            const kurdishRegex = /[پچڤگۆێڕ]/;
+            if (kurdishRegex.test(textToSpeak)) {
+                showToast("ببورە، خاندنا دەنگی بۆ زمانێ کوردی بەردەست نینە.");
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            
+            const arabicRegex = /[\u0600-\u06FF]/;
+            if (arabicRegex.test(textToSpeak)) {
+                utterance.lang = 'ar-SA';
+            } else {
+                utterance.lang = 'en-US';
+            }
+
+            const originalIcon = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-stop" style="color: #ef4444;"></i>';
+            
+            utterance.onend = function() {
+                btn.innerHTML = originalIcon;
+            };
+            
+            utterance.onerror = function() {
+                btn.innerHTML = originalIcon;
+            };
+
+            window.speechSynthesis.speak(utterance);
         }
 
         // Voice Search Logic (Web Speech API)
