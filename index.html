@@ -70,8 +70,8 @@
         .chat-container {
             width: 95%;
             max-width: 600px;
-            height: 90vh;
-            height: 90dvh;
+            height: calc(90vh - 80px);
+            height: calc(90dvh - 80px);
             background: var(--chat-bg);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
@@ -87,59 +87,75 @@
 
         @media (max-width: 600px) {
             body {
-                padding-top: 10px;
+                padding-top: 15px;
             }
 
             .chat-container {
                 width: 95%;
-                height: 88vh;
-                height: 88dvh;
+                height: calc(100dvh - 110px);
                 border-radius: 20px;
                 border: 1px solid var(--border-color);
-                margin-bottom: 15px;
+                margin-bottom: 20px;
             }
         }
 
-        .header {
-            padding: 15px;
-            text-align: center;
-            border-bottom: 1px solid var(--border-light);
-            background: var(--header-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+        .top-header {
+            width: 95%;
+            max-width: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 0 10px;
+            position: relative;
+            z-index: 20;
+        }
+
+        .header-titles {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
-            position: relative;
-            z-index: 20;
-            flex-shrink: 0;
+            text-align: center;
+            gap: 4px;
         }
 
-        .header h1 {
-            font-size: 1.3rem;
+        .header-titles h1 {
+            font-size: 1.25rem;
             font-weight: 600;
-            background: linear-gradient(to right, #60a5fa, #c084fc);
+            background: linear-gradient(to right, #60a5fa, #c084fc, #3b82f6, #60a5fa);
+            background-size: 300% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-top: 35px;
-            padding: 0 10px;
+            animation: textShine 4s linear infinite, slideDownFade 0.8s ease-out forwards;
         }
 
-        .header p {
+        .header-titles p {
             font-size: 0.85rem;
             color: var(--text-muted);
+            opacity: 0;
+            animation: slideDownFade 0.8s ease-out 0.2s forwards;
+        }
+
+        @keyframes textShine {
+            to {
+                background-position: 300% center;
+            }
+        }
+
+        @keyframes slideDownFade {
+            from {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (min-width: 480px) {
-            .header {
-                padding: 20px;
-            }
-
-            .header h1 {
-                font-size: 1.5rem;
-                margin-top: 0;
-                padding: 0 80px;
+            .header-titles h1 {
+                font-size: 1.4rem;
             }
         }
 
@@ -147,6 +163,7 @@
             flex: 1;
             padding: 20px;
             overflow-y: auto;
+            overflow-x: hidden;
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -373,6 +390,21 @@
             color: #fca5a5;
         }
 
+        .ai-msg ul, .ai-msg ol {
+            padding-right: 25px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .ai-msg li {
+            margin-bottom: 6px;
+            line-height: 1.6;
+        }
+
+        .ai-msg li:last-child {
+            margin-bottom: 0;
+        }
+
         .upload-btn {
             background: var(--input-bg);
             color: var(--text-muted);
@@ -547,8 +579,12 @@
 
         .menu-container {
             position: absolute;
-            right: 15px;
-            top: 15px;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .menu-btn {
@@ -722,38 +758,40 @@
 
 <body>
 
-    <div class="chat-container">
-        <div class="header">
+    <div class="top-header">
+        <div class="header-titles">
             <h1>زیرەکییا دەستکرد - بەشێ ئامارێ</h1>
             <p>تایبەت ب پرسیارێن ئامارێ و شیکرنا داتایان</p>
-            <div class="menu-container">
-                <button class="menu-btn" onclick="toggleMenu()" title="لیستە (Menu)">
-                    <i class="fa-solid fa-bars"></i>
+        </div>
+        <div class="menu-container">
+            <button class="menu-btn" onclick="toggleMenu()" title="لیستە (Menu)">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <button class="dropdown-item" onclick="toggleTheme()" id="themeToggleMenuBtn">
+                    <i class="fa-solid fa-moon"></i> <span>گۆهۆڕینا ڕەنگێ سایتی</span>
                 </button>
-                <div class="dropdown-menu" id="dropdownMenu">
-                    <button class="dropdown-item" onclick="toggleTheme()" id="themeToggleMenuBtn">
-                        <i class="fa-solid fa-moon"></i> <span>گۆهۆڕینا ڕەنگێ سایتی</span>
-                    </button>
-                    <button class="dropdown-item" onclick="showShareModal()">
-                        <i class="fa-solid fa-share-nodes"></i> <span>بەشداریکرن (Share)</span>
-                    </button>
-                    <button class="dropdown-item" onclick="showFeedbackModal()">
-                        <i class="fa-solid fa-headset" style="color: #10b981;"></i> <span>پەیوەندی و فیدبەک</span>
-                    </button>
-                    <button class="dropdown-item" onclick="showTermsModal()">
-                        <i class="fa-solid fa-shield-halved" style="color: #10b981;"></i> <span>مەرجێن بکارئینانێ</span>
-                    </button>
-                    <a href="about.html" class="dropdown-item">
-                        <i class="fa-solid fa-circle-user"></i> <span>دەربارەی گەشەپێدەر</span>
-                    </a>
-                    <button class="dropdown-item" onclick="clearHistory()">
-                        <i class="fa-solid fa-trash-can" style="color: #ef4444;"></i> <span
-                            style="color: #ef4444;">رەشکرنا گفتوگۆیێ</span>
-                    </button>
-                </div>
+                <button class="dropdown-item" onclick="showShareModal()">
+                    <i class="fa-solid fa-share-nodes"></i> <span>بەشداریکرن (Share)</span>
+                </button>
+                <button class="dropdown-item" onclick="showFeedbackModal()">
+                    <i class="fa-solid fa-headset" style="color: #10b981;"></i> <span>پەیوەندی و فیدبەک</span>
+                </button>
+                <button class="dropdown-item" onclick="showTermsModal()">
+                    <i class="fa-solid fa-shield-halved" style="color: #10b981;"></i> <span>مەرجێن بکارئینانێ</span>
+                </button>
+                <a href="about.html" class="dropdown-item">
+                    <i class="fa-solid fa-circle-user"></i> <span>دەربارەی گەشەپێدەر</span>
+                </a>
+                <button class="dropdown-item" onclick="clearHistory()">
+                    <i class="fa-solid fa-trash-can" style="color: #ef4444;"></i> <span
+                        style="color: #ef4444;">رەشکرنا گفتوگۆیێ</span>
+                </button>
             </div>
         </div>
+    </div>
 
+    <div class="chat-container">
         <div class="chat-box" id="chat-box">
             <div class="message ai-msg">
                 سلاڤ! ئەز ل ڤێرێ مە دا هاریکاریا تە بکەم بتنێ بۆ پرسیارێن پشکا ئامارێ (Statistics). تو دشێی ب زمانێ
